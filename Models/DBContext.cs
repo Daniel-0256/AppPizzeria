@@ -21,10 +21,13 @@ namespace AppPizzeria.Models
         // sulla configurazione e sull'utilizzo di un modello Code, vedere http://go.microsoft.com/fwlink/?LinkId=390109.
 
         // public virtual DbSet<MyEntity> MyEntities { get; set; }
-        public DbSet<Prodotto> Prodotti { get; set; }
-        public DbSet<Utente> Utenti { get; set; }
-        public DbSet<OrdineProdotto> OrdiniProdotto { get; set; }
-        public DbSet<RiepilogoOrdine> RiepilogoOrdini { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+
+        public virtual DbSet<User> Users { get; set; }
+
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
+
+        public virtual DbSet<OrderSummary> OrderSummaries { get; set; }
     }
 
     //public class MyEntity

@@ -36,9 +36,9 @@ namespace AppPizzeria.Models
             throw new NotImplementedException();
         }
 
-        public override string[] GetRolesForUser(string utenteId)
+        public override string[] GetRolesForUser(string userId)
         {
-            string role = db.Utenti.Where(u => u.UtenteId.ToString() == utenteId).FirstOrDefault().Ruolo;
+            string role = db.Users.Where(u => u.UserId.ToString() == userId).FirstOrDefault().Role;
             string[] roles = new string[] { role };
             return roles;
         }
