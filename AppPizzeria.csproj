@@ -165,6 +165,9 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrderItemsController.cs" />
+    <Compile Include="Controllers\OrderSummariesController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -175,7 +178,7 @@
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\OrderSummary.cs" />
     <Compile Include="Models\RoleManager.cs" />
-    <Compile Include="Models\Users.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +252,23 @@
     <Content Include="Views\Users\Details.cshtml" />
     <Content Include="Views\Users\Edit.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Products\Create.cshtml" />
+    <Content Include="Views\Products\Delete.cshtml" />
+    <Content Include="Views\Products\Details.cshtml" />
+    <Content Include="Views\Products\Edit.cshtml" />
+    <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\IndexUsers.cshtml" />
+    <Content Include="Views\Products\DetailsUsers.cshtml" />
+    <Content Include="Views\OrderItems\Create.cshtml" />
+    <Content Include="Views\OrderItems\Delete.cshtml" />
+    <Content Include="Views\OrderItems\Details.cshtml" />
+    <Content Include="Views\OrderItems\Edit.cshtml" />
+    <Content Include="Views\OrderItems\Index.cshtml" />
+    <Content Include="Views\OrderSummaries\Create.cshtml" />
+    <Content Include="Views\OrderSummaries\Delete.cshtml" />
+    <Content Include="Views\OrderSummaries\Details.cshtml" />
+    <Content Include="Views\OrderSummaries\Edit.cshtml" />
+    <Content Include="Views\OrderSummaries\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

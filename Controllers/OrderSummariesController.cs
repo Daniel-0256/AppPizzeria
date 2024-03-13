@@ -10,119 +10,112 @@ using AppPizzeria.Models;
 
 namespace AppPizzeria.Controllers
 {
-    public class UsersController : Controller
+    public class OrderSummariesController : Controller
     {
         private DBContext db = new DBContext();
 
-        // GET: Users
-        [Authorize(Roles = "Admin")]
+        // GET: OrderSummaries
         public ActionResult Index()
         {
-            return View(db.Users.ToList());
+            var orderSummaries = db.OrderSummaries.Include(o => o.User);
+            return View(orderSummaries.ToList());
         }
 
-        // GET: Users/Details/5
-        [Authorize(Roles = "Admin")]
+        // GET: OrderSummaries/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
-            if (user == null)
+            OrderSummary orderSummary = db.OrderSummaries.Find(id);
+            if (orderSummary == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(orderSummary);
         }
 
-        // GET: Users/Create
+        // GET: OrderSummaries/Create
         public ActionResult Create()
         {
-
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            ViewBag.UserId = new SelectList(db.Users, "UserId", "Email");
             return View();
         }
 
-        // POST: Users/Create
+        // POST: OrderSummaries/Create
         // Per la protezione da attacchi di overposting, abilitare le proprietà a cui eseguire il binding. 
         // Per altri dettagli, vedere https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "UserId,Email,Password,Name,Surname,Phone")] User user)
+        public ActionResult Create([Bind(Include = "OrderSummaryId,UserId,OrderDate,OrderAddress,Note,TotalPrice,State")] OrderSummary orderSummary)
         {
             if (ModelState.IsValid)
             {
-                user.Role = "User";
-                db.Users.Add(user);
+                db.OrderSummaries.Add(orderSummary);
                 db.SaveChanges();
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Index");
             }
 
-            return View(user);
+            ViewBag.UserId = new SelectList(db.Users, "UserId", "Email", orderSummary.UserId);
+            return View(orderSummary);
         }
 
-        // GET: Users/Edit/5
-        [Authorize(Roles = "Admin")]
+        // GET: OrderSummaries/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
-            if (user == null)
+            OrderSummary orderSummary = db.OrderSummaries.Find(id);
+            if (orderSummary == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            ViewBag.UserId = new SelectList(db.Users, "UserId", "Email", orderSummary.UserId);
+            return View(orderSummary);
         }
 
-        // POST: Users/Edit/5
+        // POST: OrderSummaries/Edit/5
         // Per la protezione da attacchi di overposting, abilitare le proprietà a cui eseguire il binding. 
         // Per altri dettagli, vedere https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public ActionResult Edit([Bind(Include = "UserId,Email,Password,Name,Surname,Phone")] User user)
+        public ActionResult Edit([Bind(Include = "OrderSummaryId,UserId,OrderDate,OrderAddress,Note,TotalPrice,State")] OrderSummary orderSummary)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(user).State = EntityState.Modified;
+                db.Entry(orderSummary).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(user);
+            ViewBag.UserId = new SelectList(db.Users, "UserId", "Email", orderSummary.UserId);
+            return View(orderSummary);
         }
 
-        // GET: Users/Delete/5
-        [Authorize(Roles = "Admin")]
+        // GET: OrderSummaries/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
-            if (user == null)
+            OrderSummary orderSummary = db.OrderSummaries.Find(id);
+            if (orderSummary == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(orderSummary);
         }
 
-        // POST: Users/Delete/5
+        // POST: OrderSummaries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
-            User user = db.Users.Find(id);
-            db.Users.Remove(user);
+            OrderSummary orderSummary = db.OrderSummaries.Find(id);
+            db.OrderSummaries.Remove(orderSummary);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

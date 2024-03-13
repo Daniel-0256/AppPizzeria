@@ -18,7 +18,7 @@ namespace AppPizzeria.Models
 
         [Required]
         [StringLength(1000, ErrorMessage = "Max 1000 caratteri")]
-        public string ProductPhone { get; set; }
+        public string ProductImage { get; set; }
 
         [Required]
         [Range(1, 99, ErrorMessage = "Scegli un prezzo da 1€ a 99€")]

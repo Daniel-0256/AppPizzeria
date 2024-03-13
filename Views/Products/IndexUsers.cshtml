@@ -1,0 +1,30 @@
+﻿@model IEnumerable<AppPizzeria.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img class="card-img-top" src="@Url.Content(item.ProductImage)" alt="Product Image">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.ProductName)</h5>
+                    <p class="card-text">
+                        Prezzo: @Html.DisplayFor(modelItem => item.ProductPrice) €<br>
+                        Tempo di preparazione: @Html.DisplayFor(modelItem => item.PreparationTime)<br>
+                        Ingredienti: @Html.DisplayFor(modelItem => item.Ingredients)<br>
+                        Categoria: @Html.DisplayFor(modelItem => item.Category)
+                    </p>
+                </div>
+                <div class="card-footer">
+                    @Html.ActionLink("Details", "Details", new { id = item.ProductId }, new { @class = "btn btn-secondary" })
+                </div>
+            </div>
+        </div>
+    }
+</div>

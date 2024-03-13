@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title - Applicazione ASP.NET</title>
@@ -20,9 +20,19 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    @if (User.Identity.IsAuthenticated)
+                    @if (HttpContext.Current.User.Identity.IsAuthenticated)
                     {
-                        <li><a href="@Url.Action("Logout", "Home")" class="btn btn-danger">Logout</a></li>
+                        <li>@Html.ActionLink("Prodotti", "Index", "Products", new { area = "" }, new { @class = "nav-link" })</li>
+
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("Utenti", "Index", "Users", new { area = "" }, new { @class = "nav-link" })</li>
+                        }
+                        using (Html.BeginForm("Logout", "Account"))
+                        {
+                            <button class="btn btn-danger">Logout</button>
+
+                        }
                     }
                     else
                     {

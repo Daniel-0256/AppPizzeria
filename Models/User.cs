@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using Newtonsoft.Json.Serialization;
 
 namespace AppPizzeria.Models
 {
@@ -33,6 +34,6 @@ namespace AppPizzeria.Models
 
         public string Role { get; set; } = "user";
 
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public ICollection<OrderSummary> OrderSummaries { get; set; }
     }
 }

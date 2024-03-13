@@ -10,63 +10,67 @@ using AppPizzeria.Models;
 
 namespace AppPizzeria.Controllers
 {
-    public class UsersController : Controller
+    public class ProductsController : Controller
     {
         private DBContext db = new DBContext();
 
-        // GET: Users
-        [Authorize(Roles = "Admin")]
+        // GET: Products
+        [Authorize]
         public ActionResult Index()
         {
-            return View(db.Users.ToList());
+            if (User.IsInRole("admin"))
+            {
+                return View("Index", db.Products.ToList());
+            }
+            else
+            {
+                return View("IndexUsers", db.Products.ToList());
+            }
         }
 
-        // GET: Users/Details/5
-        [Authorize(Roles = "Admin")]
+
+        // GET: Products/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
-            if (user == null)
+            Product product = db.Products.Find(id);
+            if (product == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(product);
         }
 
-        // GET: Users/Create
+        // GET: Products/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
-
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             return View();
         }
 
-        // POST: Users/Create
+        // POST: Products/Create
         // Per la protezione da attacchi di overposting, abilitare le proprietà a cui eseguire il binding. 
         // Per altri dettagli, vedere https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "UserId,Email,Password,Name,Surname,Phone")] User user)
+        [Authorize(Roles = "Admin")]
+        public ActionResult Create([Bind(Include = "ProductId,ProductName,ProductImage,ProductPrice,PreparationTime,Ingredients,Category")] Product product)
         {
             if (ModelState.IsValid)
             {
-                user.Role = "User";
-                db.Users.Add(user);
+                db.Products.Add(product);
                 db.SaveChanges();
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Index");
             }
 
-            return View(user);
+            return View(product);
         }
 
-        // GET: Users/Edit/5
+        // GET: Products/Edit/5
         [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
@@ -74,32 +78,32 @@ namespace AppPizzeria.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
-            if (user == null)
+            Product product = db.Products.Find(id);
+            if (product == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(product);
         }
 
-        // POST: Users/Edit/5
+        // POST: Products/Edit/5
         // Per la protezione da attacchi di overposting, abilitare le proprietà a cui eseguire il binding. 
         // Per altri dettagli, vedere https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public ActionResult Edit([Bind(Include = "UserId,Email,Password,Name,Surname,Phone")] User user)
+        public ActionResult Edit([Bind(Include = "ProductId,ProductName,ProductImage,ProductPrice,PreparationTime,Ingredients,Category")] Product product)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(user).State = EntityState.Modified;
+                db.Entry(product).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(user);
+            return View(product);
         }
 
-        // GET: Users/Delete/5
+        // GET: Products/Delete/5
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
@@ -107,22 +111,22 @@ namespace AppPizzeria.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
-            if (user == null)
+            Product product = db.Products.Find(id);
+            if (product == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(product);
         }
 
-        // POST: Users/Delete/5
+        // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
-            User user = db.Users.Find(id);
-            db.Users.Remove(user);
+            Product product = db.Products.Find(id);
+            db.Products.Remove(product);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

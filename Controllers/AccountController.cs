@@ -21,41 +21,31 @@ namespace AppPizzeria.Controllers
         // POST: Account/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(User model, string returnUrl)
+        public ActionResult Login(User model)
         {
-            if (ModelState.IsValid)
-            {
-                var existingUser = db.Users
-                    .FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password); // Assicurati che la password sia criptata in produzione!
 
-                if (existingUser != null)
-                {
-                    FormsAuthentication.SetAuthCookie(model.Email, false);
-                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                    {
-                        return Redirect(returnUrl);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home"); // o qualsiasi pagina tu voglia mostrare dopo il login
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "L'indirizzo email o la password forniti non sono corretti.");
-                }
+            var existingUser = db.Users.FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password); // Assicurati che la password sia criptata in produzione!
+
+            if (existingUser == null)
+            {
+                ModelState.AddModelError("", "L'indirizzo email o la password forniti non sono corretti.");
+                return RedirectToAction("Login", "Account");
             }
 
-            return View(model);
+            FormsAuthentication.SetAuthCookie(existingUser.UserId.ToString(), true);
+
+            return RedirectToAction("Index", "Home");
+
         }
+
 
         // POST: Account/Logout
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
-            return RedirectToAction("Index", "Home"); // Reindirizza alla pagina iniziale dopo il logout
+            return RedirectToAction("Login", "Account"); // Reindirizza alla pagina iniziale dopo il logout
         }
 
         protected override void Dispose(bool disposing)

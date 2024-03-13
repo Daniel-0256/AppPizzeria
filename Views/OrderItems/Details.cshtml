@@ -1,0 +1,50 @@
+﻿@model AppPizzeria.Models.OrderItem
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>OrderItem</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderSummary.OrderDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OrderSummary.OrderDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.ProductName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Product.ProductName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ItemPrice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ItemPrice)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.OrderItemId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
