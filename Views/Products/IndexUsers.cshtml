@@ -21,10 +21,14 @@
                         Categoria: @Html.DisplayFor(modelItem => item.Category)
                     </p>
                 </div>
-                <div class="card-footer">
-                    @Html.ActionLink("Details", "Details", new { id = item.ProductId }, new { @class = "btn btn-secondary" })
+                <div>
+                    @using (Html.BeginForm("LinkCarrello", "OrderItems", new { id = item.ProductId }, FormMethod.Post))
+                    {
+                        <button type="submit" class="btn btn-primary">Aggiungi al carrello</button>
+                    }
                 </div>
             </div>
         </div>
     }
 </div>
+

@@ -1,63 +1,71 @@
-﻿@model IEnumerable<AppPizzeria.Models.OrderSummary>
+﻿@model AppPizzeria.Models.OrderSummary
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Riepilogo Ordini";
 }
 
-<h2>Index</h2>
+<h2>Riepilogo Ordini</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.User.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.OrderDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.OrderAddress)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Note)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TotalPrice)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.State)
-        </th>
-        <th></th>
-    </tr>
+<div class="order-summary">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Ordine Numero: @Model.OrderSummaryId</h5>
+            @if (Model.OrderItems != null && Model.OrderItems.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Prodotto</th>
+                            <th>Quantità</th>
+                            <th>Prezzo unitario</th>
+                            <th>Totale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OrderItems)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Product.ProductName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Product.ProductPrice) €</td>
+                                <td>@(item.Product.ProductPrice * item.Quantity) €</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            <p class="card-text">
+                Totale ordine: @ViewBag.Somma €<br>
+            </p>
+        </div>
+    </div>
+</div>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.User.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OrderDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OrderAddress)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Note)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalPrice)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.State)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.OrderSummaryId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.OrderSummaryId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.OrderSummaryId })
-        </td>
-    </tr>
+@using (Html.BeginForm("FinalizeOrder", "OrderSummaries", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="order-details">
+        <h3>Dettagli della consegna</h3>
+
+        <div class="form-group">
+            <label for="OrderDate">Data di consegna:</label>
+            <input type="datetime-local" class="form-control" id="OrderDate" name="OrderDate" value="@Model.OrderDate">
+        </div>
+
+        <div class="form-group">
+            <label for="OrderAddress">Indirizzo di consegna:</label>
+            <input type="text" class="form-control" id="OrderAddress" name="OrderAddress" value="@Model.OrderAddress" placeholder="Inserisci il tuo indirizzo di consegna">
+        </div>
+
+        <div class="form-group">
+            <label for="Note">Note dell'ordine (allergie, preferenze, ecc.):</label>
+            <textarea class="form-control" id="Note" name="Note" rows="3">@Model.Note</textarea>
+        </div>
+
+        <input type="hidden" name="OrderSummaryId" value="@Model.OrderSummaryId" />
+
+        <button type="submit" class="btn btn-success">Concludi Ordine</button>
+    </div>
 }
 
-</table>

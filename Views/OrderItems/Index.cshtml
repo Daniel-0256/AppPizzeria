@@ -1,51 +1,35 @@
 ﻿@model IEnumerable<AppPizzeria.Models.OrderItem>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Carrello";
 }
 
-<h2>Index</h2>
+<h2>Carrello</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.OrderSummary.OrderDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Product.ProductName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ItemPrice)
-        </th>
-        <th></th>
-    </tr>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img class="card-img-top" src="@Url.Content(item.Product.ProductImage)" alt="Immagine del prodotto">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.Product.ProductName)</h5>
+                    <p class="card-text">
+                        Prezzo: @Html.DisplayFor(modelItem => item.Product.ProductPrice) €<br>
+                        Quantità attuale: @Html.DisplayFor(modelItem => item.Quantity)<br>
+                        Prezzo totale: @(item.Product.ProductPrice * item.Quantity) €
+                    </p>
+                </div>
+                <div class="card-footer">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.OrderItemId }, new { @class = "btn btn-primary" }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.OrderItemId }, new { @class = "btn btn-secondary" }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.OrderItemId }, new { @class = "btn btn-danger" })
+                </div>
+            </div>
+        </div>
+    }
+    <div>
+        @Html.ActionLink("Conferma Ordine", "Index", "OrderSummaries", new { area = "" }, new { @class = "btn btn-secondary" })
+    </div>
+</div>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.OrderSummary.OrderDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Product.ProductName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Quantity)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ItemPrice)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.OrderItemId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.OrderItemId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.OrderItemId })
-        </td>
-    </tr>
-}
-
-</table>

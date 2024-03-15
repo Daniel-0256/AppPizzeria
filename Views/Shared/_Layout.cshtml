@@ -23,6 +23,8 @@
                     @if (HttpContext.Current.User.Identity.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Prodotti", "Index", "Products", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Ordine", "Index", "OrderItems", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Riepilogo", "Index", "OrderSummaries", new { area = "" }, new { @class = "nav-link" })</li>
 
                         if (User.IsInRole("Admin"))
                         {
