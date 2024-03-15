@@ -18,6 +18,8 @@ namespace AppPizzeria.Controllers
         [Authorize]
         public ActionResult Index()
         {
+            NuovoOrdine();
+
             if (User.IsInRole("admin"))
             {
                 return View("Index", db.Products.ToList());
@@ -33,6 +35,8 @@ namespace AppPizzeria.Controllers
         [Authorize]
         public ActionResult Details(int? id)
         {
+            NuovoOrdine();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -138,6 +142,28 @@ namespace AppPizzeria.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public void NuovoOrdine()
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                int userId = Convert.ToInt32(HttpContext.User.Identity.Name);
+                using (DBContext db = new DBContext())
+                {
+                    OrderSummary Carrello = db.OrderSummaries.Where(c => c.UserId == userId && c.State == "Non Evaso").FirstOrDefault();
+                    if (Carrello == null)
+                    {
+                        OrderSummary newOrder = new OrderSummary
+                        {
+                            UserId = userId,
+                            State = "Non Evaso"
+                        };
+                        db.OrderSummaries.Add(newOrder);
+                        db.SaveChanges();
+                    }
+                }
+            }
         }
     }
 }

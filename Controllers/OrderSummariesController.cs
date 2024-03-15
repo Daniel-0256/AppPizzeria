@@ -19,24 +19,34 @@ namespace AppPizzeria.Controllers
         public ActionResult Index()
         {
             int userId = Convert.ToInt32(HttpContext.User.Identity.Name);
-            OrderSummary orderSummary = db.OrderSummaries
-                                          .Include(o => o.User)
-                                          .FirstOrDefault(o => o.UserId == userId && o.State == "Non Evaso");
+            OrderSummary summary = db.OrderSummaries.Include(o => o.OrderItems).Include(o => o.OrderItems.Select(item => item.Product)).Where(o => o.UserId == userId && o.State == "Non Evaso").FirstOrDefault();
 
-            if (orderSummary != null)
+            if (summary != null)
             {
-                var orderItems = db.OrderItems.Include(o => o.Product).Where(oi => oi.OrderSummaryId == orderSummary.OrderSummaryId).ToList();
-                ViewBag.Somma = orderItems.Sum(oi => oi.ItemPrice);
+                ViewBag.Somma = summary.OrderItems.Sum(oi => oi.ItemPrice);
 
-                return View(orderSummary);
+                return View(summary);
+
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return View();
             }
         }
 
+        [Authorize (Roles = "Admin")]
+        public ActionResult IndexAdmin()
+        {
+            var orderSummaries = db.OrderSummaries.Include(o => o.User).ToList();
+            return View(orderSummaries);
+        }
 
+        [Authorize(Roles = "Admin")]
+        public ActionResult APIAdmin()
+        {
+            var orderSummaries = db.OrderSummaries.Where(o => o.State == "Evaso").Count();
+            return Json(orderSummaries, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         [Authorize]
@@ -59,7 +69,7 @@ namespace AppPizzeria.Controllers
             if (existingOrderSummary != null)
             {
                 decimal sommaPrezzo = db.OrderItems.Where(oi => oi.OrderSummaryId == existingOrderSummary.OrderSummaryId).Sum(o => o.ItemPrice);
-                
+
                 existingOrderSummary = new OrderSummary
                 {
                     UserId = userId,
@@ -92,12 +102,17 @@ namespace AppPizzeria.Controllers
                 return HttpNotFound("Ordine non trovato");
             }
 
+            var userId = Convert.ToInt32(HttpContext.User.Identity.Name);
+            var existingOrderSummary = db.OrderSummaries.FirstOrDefault(o => o.UserId == userId && o.State == "Non Evaso");
+            decimal sommaPrezzo = db.OrderItems.Where(oi => oi.OrderSummaryId == existingOrderSummary.OrderSummaryId).Sum(o => o.ItemPrice);
+
             if (!string.IsNullOrEmpty(OrderAddress) && !string.IsNullOrEmpty(Note))
             {
                 // Aggiorna i campi dell'ordine con i nuovi valori forniti dall'utente.
                 orderSummary.OrderAddress = OrderAddress;
                 orderSummary.OrderDate = OrderDate;
                 orderSummary.Note = Note;
+                orderSummary.TotalPrice = sommaPrezzo;
                 orderSummary.State = "Evaso";
 
                 // Salva le modifiche nel database
@@ -105,7 +120,7 @@ namespace AppPizzeria.Controllers
                 db.SaveChanges();
 
                 // Reindirizza l'utente a una pagina di conferma o alla pagina di riepilogo degli ordini
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             else
             {

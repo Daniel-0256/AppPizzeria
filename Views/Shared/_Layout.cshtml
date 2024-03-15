@@ -29,6 +29,7 @@
                         if (User.IsInRole("Admin"))
                         {
                             <li>@Html.ActionLink("Utenti", "Index", "Users", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("OrdiniAdmin", "IndexAdmin", "OrderSummaries", new { area = "" }, new { @class = "nav-link" })</li>
                         }
                         using (Html.BeginForm("Logout", "Account"))
                         {

@@ -7,29 +7,37 @@
 <h2>Carrello</h2>
 
 <div class="row">
-    @foreach (var item in Model)
+    @if (Model.Any())
     {
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <img class="card-img-top" src="@Url.Content(item.Product.ProductImage)" alt="Immagine del prodotto">
-                <div class="card-body">
-                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.Product.ProductName)</h5>
-                    <p class="card-text">
-                        Prezzo: @Html.DisplayFor(modelItem => item.Product.ProductPrice) €<br>
-                        Quantità attuale: @Html.DisplayFor(modelItem => item.Quantity)<br>
-                        Prezzo totale: @(item.Product.ProductPrice * item.Quantity) €
-                    </p>
-                </div>
-                <div class="card-footer">
-                    @Html.ActionLink("Edit", "Edit", new { id = item.OrderItemId }, new { @class = "btn btn-primary" }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.OrderItemId }, new { @class = "btn btn-secondary" }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.OrderItemId }, new { @class = "btn btn-danger" })
+        foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img class="card-img-top" src="@Url.Content(item.Product.ProductImage)" alt="Immagine del prodotto">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Product.ProductName)</h5>
+                        <p class="card-text">
+                            Prezzo: @Html.DisplayFor(modelItem => item.Product.ProductPrice) €<br>
+                            Quantità attuale: @Html.DisplayFor(modelItem => item.Quantity)<br>
+                            Prezzo totale: @(item.Product.ProductPrice * item.Quantity) €
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        @Html.ActionLink("Edit", "Edit", new { id = item.OrderItemId }, new { @class = "btn btn-primary" }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.OrderItemId }, new { @class = "btn btn-secondary" }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.OrderItemId }, new { @class = "btn btn-danger" })
+                    </div>
                 </div>
             </div>
+        }
+        <div>
+            @Html.ActionLink("Conferma Ordine", "Index", "OrderSummaries", new { area = "" }, new { @class = "btn btn-secondary" })
         </div>
+
     }
-    <div>
-        @Html.ActionLink("Conferma Ordine", "Index", "OrderSummaries", new { area = "" }, new { @class = "btn btn-secondary" })
-    </div>
+    else
+            {
+                <h3>Il carrello è vuoto</h3>
+            }
 </div>
 

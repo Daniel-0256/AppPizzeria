@@ -19,11 +19,23 @@ namespace AppPizzeria.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            var orderItems = db.OrderItems.Include(o => o.OrderSummary).Include(o => o.Product);
-            return View(orderItems.ToList());
+            NuovoOrdine();
+
+            int userId = Convert.ToInt32(HttpContext.User.Identity.Name);
+            var orderSummary = db.OrderSummaries.Where(o => o.UserId == userId && o.State == "Non Evaso").FirstOrDefault();
+            if (orderSummary != null)
+            {
+                var orderItems = db.OrderItems.Include(o => o.Product).Where(o => o.OrderSummaryId == orderSummary.OrderSummaryId).ToList();
+                return View(orderItems);
+
+            }
+            else
+            {
+                return View();
+            }
         }
 
-   
+
         [HttpPost]
         [Authorize]
         public ActionResult LinkCarrello(int id)
@@ -194,6 +206,28 @@ namespace AppPizzeria.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public void NuovoOrdine()
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                int userId = Convert.ToInt32(HttpContext.User.Identity.Name);
+                using (DBContext db = new DBContext())
+                {
+                    OrderSummary Carrello = db.OrderSummaries.Where(c => c.UserId == userId && c.State == "Non Evaso").FirstOrDefault();
+                    if (Carrello == null)
+                    {
+                        OrderSummary newOrder = new OrderSummary
+                        {
+                            UserId = userId,
+                            State = "Non Evaso"
+                        };
+                        db.OrderSummaries.Add(newOrder);
+                        db.SaveChanges();
+                    }
+                }
+            }
         }
     }
 }
